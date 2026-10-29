@@ -27,9 +27,25 @@ All outbound links live in `src/site.js`. The APK button points at
 https://github.com/lewiseman/journal/releases/latest/download/journal.apk
 ```
 
-so it works once a GitHub release has an asset named **`journal.apk`** (for example
-the `app-release.apk` from `flutter build apk --release`, renamed). Update
-`APK.size` there if the build size changes.
+Every app release publishes the signed APK as **`journal.apk`**, so the download
+buttons always resolve to the latest build. The footer links to the latest
+release's installation instructions. Downloads support **Android 10+ / ARM64**.
+
+Download size and version come from `src/release.json`, generated from the actual
+verified APK by the app's release script:
+
+```sh
+cd ../journal
+python3 scripts/release_android.py --publish
+cd ../bookflip
+npm run build
+```
+
+The app source must be committed and pushed before `--publish`. After publishing,
+commit and push this website's generated metadata and page changes using the
+existing hosting setup. The stable download URL needs no edits for future
+versions. See [the app's release guide](https://github.com/lewiseman/journal/blob/qvac-ai-on-device/docs/android-release.md) for
+signing, OAuth, version increments and build-only previews.
 
 ## Artwork
 

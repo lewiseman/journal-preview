@@ -10,7 +10,8 @@ export function DownloadButton({ compact = false, className = "" }) {
       className={`btn btn--primary ${className}`}
       href={LINKS.apk}
       download
-      aria-label={`Download the Journal APK for ${APK.platform}, ${APK.size}`}
+      aria-label={`Download Journal ${APK.version} for ${APK.platform}, ${APK.size}. ${APK.requirements}`}
+      title={`Journal ${APK.version} · ${APK.requirements}`}
     >
       <Android />
       {compact ? "Get the APK" : "Download APK"}

@@ -1,3 +1,5 @@
+import release from "./release.json";
+
 /* ───────────────────────────────────────────────────────────────────────
    site.js: every outbound link and the copy that repeats across sections.
    Change a link here and it updates everywhere.
@@ -8,9 +10,15 @@ export const LINKS = {
   // points at the newest one.
   apk: "https://github.com/lewiseman/journal/releases/latest/download/journal.apk",
   github: "https://github.com/lewiseman/journal",
+  releases: "https://github.com/lewiseman/journal/releases/latest",
 };
 
-export const APK = { size: "41 MB", platform: "Android" };
+export const APK = {
+  size: `${Math.ceil(release.sizeBytes / 1_000_000)} MB`,
+  platform: "Android",
+  version: release.version,
+  requirements: "Android 10+ · ARM64",
+};
 
 export const art = (name) => `/art/${name}`;
 
