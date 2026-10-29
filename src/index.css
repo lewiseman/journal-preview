@@ -1,0 +1,353 @@
+@import url("https://fonts.googleapis.com/css2?family=Playwrite+AR+Guides&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+@import "tailwindcss";
+
+/* ═══════════════════════════ FONTS ═══════════════════════════ */
+@font-face {
+  font-family: "Nunito";
+  src: url("fonts/Nunito.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Play";
+  src: url("fonts/Play.ttf") format("truetype");
+}
+
+/* ═══════════════════════════ THEME ═══════════════════════════ */
+@theme {
+  --color-purple: #5e00d7;
+  --color-dark: #2c026b;
+  --color-rose: #d46d7a;
+  --font-nunito: "Nunito", sans-serif;
+  --font-play: "Play", sans-serif;
+}
+
+/* ═══════════════════════════ GLOBAL ═══════════════════════════ */
+html,
+body {
+  width: 100%;
+  background-color: #ffffff;
+  color: white;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════ UTILITIES ═══════════════════════════ */
+@utility flex-center {
+  @apply flex justify-center items-center;
+}
+
+@utility col-center {
+  @apply flex flex-col justify-center items-center;
+}
+
+@utility abs-center {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+}
+
+@utility text-gradient {
+  background: linear-gradient(to bottom, #ffffff, #898989);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility radial-gradient {
+  background: radial-gradient(
+    ellipse farthest-corner at center,
+    #00845b 0%,
+    #222 60%,
+    #000 100%
+  );
+}
+
+@utility masked-img {
+  mask-image: url("/images/mask-img.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 50%;
+}
+
+@utility farm-img {
+  background: url("/images/farm.png") no-repeat center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+/* ═══════════════════════════ COMPONENTS ═══════════════════════════ */
+@layer components {
+  /* ─────────────── main + nav ─────────────── */
+  main {
+    @apply w-full overflow-x-hidden;
+  }
+
+  nav {
+    @apply fixed z-50 w-full;
+
+    div {
+      @apply flex md:flex-row flex-col md:justify-between items-center gap-5 py-5 lg:px-0 px-5 container mx-auto;
+    }
+
+    p {
+      @apply font-play text-3xl -mb-2;
+    }
+
+    a {
+      @apply cursor-pointer text-nowrap md:text-base text-sm;
+    }
+
+    ul {
+      @apply flex-center lg:gap-12 gap-7;
+    }
+  }
+
+  /* One colour drives the hero's expanding dot AND the book scene,
+     so the hand-off between them is seamless. Change it here only. */
+  :root {
+    --scene: #e6def8;
+  }
+
+  /* ═══════════════════════════ #hero ═══════════════════════════ */
+  #hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    color: #fff;
+
+    & .hero__bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    & .hero__shade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgb(44 2 107 / 0.55),
+        rgb(0 0 0 / 0.65)
+      );
+    }
+
+    & .hero__title {
+      position: relative;
+      opacity: 0;
+      padding: 0 1.5rem;
+      text-align: center;
+      text-wrap: balance;
+      font-family: "Nunito", sans-serif;
+      font-weight: 900;
+      font-size: clamp(2.5rem, 8vw, 6.5rem);
+      line-height: 1.05;
+    }
+
+    & .hero__sub {
+      position: relative;
+      opacity: 0;
+      max-width: 34rem;
+      margin-top: 1.5rem;
+      padding: 0 1.5rem;
+      text-align: center;
+      font-family: "Nunito", sans-serif;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: rgb(255 255 255 / 0.85);
+    }
+
+    & .hero__hint {
+      position: absolute;
+      bottom: 2rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      opacity: 0.7;
+      animation: hero-hint 1.8s ease-in-out infinite;
+    }
+
+    & .hero__dot {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: var(--scene);
+    }
+  }
+
+  @keyframes hero-hint {
+    50% {
+      transform: translateY(6px);
+      opacity: 0.3;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #hero .hero__hint {
+      animation: none;
+    }
+  }
+
+  /* ═══════════════════════════ #book ═══════════════════════════ */
+  #book {
+    --ink: #2c026b;
+    --paper: #fbf7ef;
+    --insert: #efe6d6;
+    --rule: rgb(44 2 107 / 0.1);
+    --gutter: rgb(44 2 107 / 0.14);
+    --spine: #14012f;
+    --cover-bg: linear-gradient(135deg, #5e00d7, #2c026b);
+    --cover-edge: #3d0899;
+
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--scene);
+
+    /* book shell */
+    & .book {
+      position: relative;
+      width: min(44vw, 54vh, 380px);
+      min-width: 150px;
+      aspect-ratio: 3 / 4;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    & .book__spine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 12px;
+      height: 100%;
+      background: var(--spine);
+      transform-origin: 0 50%;
+      transform: translate3d(0, 0, -13px);
+    }
+
+    /* a page hinges on its left edge (GSAP rotates + translates it) */
+    & .page {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+
+    & .book__page {
+      position: absolute;
+      top: 3%;
+      left: 2%;
+      width: 94%;
+      height: 94%;
+      border-radius: 0 5% 5% 0;
+      transform-origin: 0 50%;
+    }
+
+    & .book__cover {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* the two faces of every page: kept free of containment so the 3D flip stays simple */
+    & .page__half {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      clip-path: inset(0 0.5%);
+      background: var(--paper);
+      transform: rotateY(calc(var(--rotation) * 1deg))
+        translate3d(0, 0, calc(0.5px * var(--coefficient)));
+    }
+
+    & .page__half--front {
+      --rotation: 0;
+      --coefficient: 0;
+      border-radius: 0 5% 5% 0;
+    }
+
+    & .page__half--back {
+      --rotation: 180;
+      --coefficient: 2;
+      border-radius: 5% 0 0 5%;
+    }
+
+    /* soft shading toward the spine on ruled pages */
+    & .book__page:not(.book__cover) .page__half--front {
+      background:
+        linear-gradient(to right, var(--gutter), transparent 7%), var(--paper);
+    }
+
+    & .book__page:not(.book__cover) .page__half--back {
+      background:
+        linear-gradient(to left, var(--gutter), transparent 7%), var(--paper);
+    }
+
+    /* covers: outside = cover colour, inside = endpaper framed in the cover colour */
+    & .book__cover .page__half {
+      background: var(--cover-bg);
+    }
+
+    & .book__cover--front .page__half--back,
+    & .book__cover--back .page__half--front {
+      background: var(--insert);
+    }
+
+    & .book__cover--front .page__half--back .page__inner,
+    & .book__cover--back .page__half--front .page__inner {
+      border: 3cqw solid var(--cover-edge);
+    }
+
+    /* page content: .page__content is the size container for cqw, .page__inner is the padded flex column */
+    & .page__content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      container-type: inline-size;
+    }
+
+    & .page__inner {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      padding: 9cqw 8cqw;
+      font-family: "Nunito", sans-serif;
+      color: var(--ink);
+    }
+
+    /* ruled paper on normal pages only */
+    & .book__page:not(.book__cover) .page__inner {
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0 calc(6cqw - 1px),
+        var(--rule) calc(6cqw - 1px) 6cqw
+      );
+    }
+
+    & .page__number {
+      position: absolute;
+      bottom: 3cqw;
+      font-size: 3cqw;
+      color: rgb(44 2 107 / 0.45);
+    }
+
+    & .page__half--front .page__number {
+      right: 5cqw;
+    }
+
+    & .page__half--back .page__number {
+      left: 5cqw;
+    }
+
+    /* per-page overrides live here, e.g.
+       & [data-page="goals"] .page__inner { background-color: #fff8f0; } */
+  }
+}
