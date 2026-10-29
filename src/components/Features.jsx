@@ -3,6 +3,7 @@ import { art } from "../site";
 import { useReveal } from "../hooks";
 import { reducedMotion } from "../scroll";
 import { Search } from "./Icons";
+import TornEdge from "./TornEdge";
 
 // One entry in the ruled index: label, illustration over an ink wash,
 // heading, a line of copy and its little live demo.
@@ -176,19 +177,6 @@ export default function Features() {
   return (
     <section id="features" ref={root} className="section section--paper">
       <div className="wrap">
-        <div className="section__head">
-          <span className="eyebrow reveal text-[#7a5a8e]">Everything you keep</span>
-          <h2 className="display reveal">
-            Made like stationery.
-            <br />
-            Thinks like a friend.
-          </h2>
-          <p className="reveal">
-            Every screen is hand-illustrated, every page has paper under it. And behind the paper,
-            a quiet assistant that helps you remember and reflect.
-          </p>
-        </div>
-
         <div className="features">
           <Feature n={1} label="Diary" icon="diary.png" wash="#d98a7a" title="Photo stories" demo={<Prints />}>
             Pick a few photos and get gentle questions about each one. Your answers become a
@@ -219,7 +207,7 @@ export default function Features() {
           </Feature>
         </div>
       </div>
-      <div className="tear tear--bottom" style={{ background: "var(--night)" }} />
+      <TornEdge />
     </section>
   );
 }

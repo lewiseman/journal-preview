@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { art } from "../site";
 import { finePointer } from "../hooks";
 import { reducedMotion } from "../scroll";
-import { DownloadButton, GitHubButton } from "./Buttons";
+import { useOwner } from "../owner";
 import Stars from "./Stars";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -12,6 +12,32 @@ gsap.registerPlugin(ScrollTrigger);
 // The sun in night.jpg (natural pixels). The sky is drawn with
 // object-fit: cover at object-position 50% 38%, see .hero__sky.
 const SKY = { w: 941, h: 1672, posY: 0.38, sunX: 673, sunY: 587, sunR: 56 };
+
+// Starts like ease-in (stays on the painted sun while the disc is small) but
+// ends with zero speed, so whatever rides the sun's centre arrives at rest.
+const settle = (t) => t ** 4 * (5 - 4 * t);
+
+// Must match the closed book's starting pose in Book.jsx (buildTimeline).
+const BOOK_START = { scale: 0.62, rotation: -4 };
+
+// Where the closed book sits when its section reaches the top of the screen,
+// relative to the centre of the screen (offsets ignore transforms).
+function bookAtStart() {
+  const book = document.querySelector("#book .book");
+  const section = document.querySelector("#book");
+  if (!book || !section) return { x: 0, y: 0, w: 0 };
+  let x = 0;
+  let y = 0;
+  for (let n = book; n && n !== section; n = n.offsetParent) {
+    x += n.offsetLeft;
+    y += n.offsetTop;
+  }
+  return {
+    x: x + book.offsetWidth / 2 - section.offsetWidth / 2,
+    y: y + book.offsetHeight / 2 - section.offsetHeight / 2,
+    w: book.offsetWidth,
+  };
+}
 
 // Where the sun lands inside the hero, in CSS pixels.
 function sunOnScreen(box) {
@@ -31,6 +57,9 @@ const FLOATS = [
   { src: "theme_dark.png", x: 66, y: 98, s: 13, z: 0.7, r: -10, d: 7.6 },
 ];
 
+const BODY =
+  "Write a little tonight. Journal reads it back to you as a summary, one good question and a goal worth keeping. Quietly, on your phone. Never in the cloud.";
+
 const LINES = [
   "Hi, I'm J!",
   "Your secrets stay with me.",
@@ -47,6 +76,7 @@ export default function Hero() {
   const stage = useRef(null);
   const bubbleRef = useRef(null);
   const [line, setLine] = useState(0);
+  const owner = useOwner();
 
   useLayoutEffect(() => {
     let onMove = null;
@@ -57,9 +87,6 @@ export default function Hero() {
       if (!reducedMotion) {
         gsap
           .timeline({ defaults: { ease: "power3.out" } })
-          .from(".hero__brand", { y: 30, opacity: 0, scale: 0.9, duration: 1 }, 0.1)
-          .from(".hero__title .w", { yPercent: 110, opacity: 0, rotate: 4, stagger: 0.06, duration: 1 }, 0.2)
-          .from(".hero__sub, .hero__cta > *", { y: 24, opacity: 0, stagger: 0.08, duration: 0.8 }, 0.55)
           .from(mascot.current.querySelector("img"), { scale: 0.2, opacity: 0, rotate: -25, duration: 1.4, ease: "elastic.out(1, 0.55)" }, 0.35)
           .from(".float__p", { scale: 0, opacity: 0, stagger: 0.07, duration: 1, ease: "back.out(2)" }, 0.6)
           .from(bubbleRef.current, { scale: 0, opacity: 0, duration: 0.6, ease: "back.out(3)" }, 1.4);
@@ -72,6 +99,10 @@ export default function Hero() {
           x: gsap.quickTo(el, "x", { duration: 0.9, ease: "power3.out" }),
           y: gsap.quickTo(el, "y", { duration: 0.9, ease: "power3.out" }),
         }));
+        // the note leans a little toward the cursor
+        const note = host.querySelector(".note");
+        const nx = gsap.quickTo(note, "rotationY", { duration: 1.2, ease: "power3.out" });
+        const ny = gsap.quickTo(note, "rotationX", { duration: 1.2, ease: "power3.out" });
         const mx = gsap.quickTo(mascot.current, "x", { duration: 1, ease: "power3.out" });
         const my = gsap.quickTo(mascot.current, "y", { duration: 1, ease: "power3.out" });
         const mr = gsap.quickTo(mascot.current, "rotation", { duration: 1, ease: "power3.out" });
@@ -82,6 +113,8 @@ export default function Hero() {
             l.x(px * 60 * l.z);
             l.y(py * 40 * l.z);
           });
+          nx(px * 10);
+          ny(-py * 8);
           mx(px * 24);
           my(py * 18);
           mr(px * 10);
@@ -106,8 +139,29 @@ export default function Hero() {
         return { D, x: p.x - box.width / 2, y: p.y - box.height / 2, scale: (p.r * 2) / D };
       };
       let geo = fit();
-      onRefresh = () => (geo = fit());
+
+      // re-measure the sun whenever the layout changes
+      // the closed book that comes out of the sun, and where it has to land
+      const sunbook = section.current.querySelector(".sunbook");
+      const sunbody = sunbook.querySelector(".sunbook__body");
+      const place = () => {
+        const b = bookAtStart();
+        gsap.set(sunbook, { width: b.w, xPercent: -50, yPercent: -50, top: "50%", left: "50%" });
+        return b;
+      };
+      let landing = place();
+
+      onRefresh = () => {
+        geo = fit();
+        landing = place();
+      };
       ScrollTrigger.addEventListener("refreshInit", onRefresh);
+
+      /* ── the app bar logo starts large over the sky, settles into the bar ── */
+      const navLogo = document.querySelector(".nav__brand img");
+      // as large as fits beside the GitHub and APK buttons
+      const bigLogo = () => (window.innerWidth < 420 ? 1.35 : window.innerWidth < 900 ? 1.6 : 2.5);
+      gsap.set(navLogo, { transformOrigin: "0% 0%" });
 
       const out = gsap.timeline({
         defaults: { ease: "none" },
@@ -115,15 +169,19 @@ export default function Hero() {
           trigger: section.current,
           start: "top top",
           end: "+=110%",
-          scrub: 1,
+          // tied straight to the scroll (Lenis already smooths it), so this
+          // scene and the book's are always in step at the hand-over
+          scrub: true,
           pin: true,
           invalidateOnRefresh: true,
         },
       });
 
       out
-        .to(".fade-a, .fade-b, .hero__hint", { y: -50, opacity: 0, stagger: 0.03, duration: 0.4 }, 0)
-        .to(".hero__title", { opacity: 0, duration: 0.35 }, 0.3)
+        .fromTo(navLogo, { scale: bigLogo }, { scale: 1, ease: "power2.inOut", duration: 0.25 }, 0)
+        // the note comes unpinned and falls away
+        .to(".note__pin", { y: -24, rotation: 30, opacity: 0, duration: 0.12 }, 0.02)
+        .to(".note-wrap", { y: 260, rotation: 10, opacity: 0, ease: "power1.in", duration: 0.4 }, 0.04)
         .to(stage.current, { opacity: 0, duration: 0.4 }, 0.15)
         .to(".float", {
           x: (i) => (FLOATS[i].x < 50 ? -1 : 1) * window.innerWidth * 0.45,
@@ -133,16 +191,28 @@ export default function Hero() {
           duration: 0.6,
         }, 0)
         .to(mascot.current, { scale: 0.5, yPercent: -30, duration: 0.45 }, 0.1)
-        .fromTo(
-          dot.current,
-          { scale: () => geo.scale, x: () => geo.x, y: () => geo.y },
-          { scale: 1, x: 0, y: 0, ease: "power3.in", duration: 0.8 },
-          0.2,
-        )
+        // the sun swells, and its centre drifts to the middle and settles
+        // (so the book riding it arrives at rest, like the real one)
+        .fromTo(dot.current, { x: () => geo.x, y: () => geo.y }, { x: 0, y: 0, ease: settle, duration: 0.8 }, 0.2)
+        .fromTo(dot.current, { scale: () => geo.scale }, { scale: 1, ease: "power3.in", duration: 0.8 }, 0.2)
         // hidden at rest (the painted sun shows through), fades in once scrolling starts
         .fromTo(dot.current, { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0.06)
         .fromTo(".hero__glow", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.25)
-        .fromTo(".hero__day", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.7);
+        .fromTo(".hero__day", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.7)
+        // the book rides the sun's centre, slides to its own spot, and only
+        // grows once the light is big enough to hold it
+        .fromTo(sunbook, { x: () => geo.x, y: () => geo.y }, { x: 0, y: 0, ease: settle, duration: 0.8 }, 0.2)
+        .fromTo(sunbody, { x: 0, y: 0 }, { x: () => landing.x, y: () => landing.y, ease: "sine.inOut", duration: 0.4 }, 0.6)
+        .fromTo(
+          sunbody,
+          { scale: 0.05, rotation: -14, opacity: 0 },
+          // steady growth that matches the real book's opening speed at the hand-over
+          { scale: BOOK_START.scale, rotation: BOOK_START.rotation, opacity: 1, ease: "none", duration: 0.33 },
+          0.67,
+        )
+        .fromTo(".sunbook__halo", { opacity: 1 }, { opacity: 0, duration: 0.25 }, 0.75)
+        // hand over: the real book is right underneath, identical
+        .set(section.current, { autoAlpha: 0 }, 1);
     }, section);
 
 
@@ -195,7 +265,7 @@ export default function Hero() {
     }
   };
 
-  const title = "What did today teach you".split(" ");
+  const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
 
   return (
     <section id="hero" ref={section}>
@@ -205,29 +275,27 @@ export default function Hero() {
 
       <div className="hero__inner wrap">
         <div className="hero__copy">
-          <div className="fade-a">
-            <img className="hero__brand" src={art("journal.png")} alt="Journal" width="973" height="275" />
-          </div>
-          <h1 className="hero__title display">
-            {title.map((w, i) => (
-              <span key={i} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
-                <span className="w inline-block">
-                  {w}
-                  {i === title.length - 1 && <span className="q">?</span>}
-                  {i < title.length - 1 && " "}
-                </span>
-              </span>
-            ))}
-          </h1>
-          <div className="fade-b">
-          <p className="hero__sub">
-            A journal that thinks offline. It turns your days into summaries, and your summaries
-            into goals you actually keep. All on your phone, nowhere else.
-          </p>
-          <div className="hero__cta">
-            <DownloadButton />
-            <GitHubButton />
-          </div>
+          <div className="note-wrap">
+            <div className="note-bend">
+              <article className="note">
+                <span className="note__tape" aria-hidden="true" />
+                <img className="note__pin" src={art("diary_calendar_pin.png")} alt="" />
+                <p className="note__date">{today}</p>
+                <h1 className="note__title display">
+                  Every day
+                  <br />
+                  deserves a page.
+                </h1>
+                <p className="note__body hand">{BODY}</p>
+                <p className="note__ps hand">
+                  p.s. scroll and watch the sun rise
+                  <svg viewBox="0 0 60 70" aria-hidden="true">
+                    <path d="M8 6c18 2 34 12 36 28 1 9-4 16-12 16-7 0-9-8-3-11 9-4 20 4 21 18" />
+                    <path d="M42 50l9 7 4-11" />
+                  </svg>
+                </p>
+              </article>
+            </div>
           </div>
         </div>
 
@@ -255,10 +323,16 @@ export default function Hero() {
         </div>
       </div>
 
-      <span className="hero__hint">
-        Scroll
-        <i />
-      </span>
+      <div className="sunbook" aria-hidden="true">
+        <div className="sunbook__body">
+          <span className="sunbook__halo" />
+          <span className="sunbook__shadow" />
+          <div className="sunbook__cover">
+            <div className="cover-art" />
+            {owner && <span className="cover-name">{owner}</span>}
+          </div>
+        </div>
+      </div>
       <div ref={dot} className="hero__dot" aria-hidden="true">
         <span className="hero__sun" />
         <span className="hero__glow" />

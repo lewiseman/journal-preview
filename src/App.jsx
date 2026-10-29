@@ -3,8 +3,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import NavBar from "./components/NavBar.jsx";
 import Hero from "./components/Hero.jsx";
 import Book from "./components/Book.jsx";
+import Screens from "./components/Screens.jsx";
 import Features from "./components/Features.jsx";
-import Download from "./components/Download.jsx";
 import Footer from "./components/Footer.jsx";
 import { startSmoothScroll } from "./scroll";
 
@@ -25,8 +25,8 @@ const App = () => {
       <NavBar />
       <Hero />
       <Book />
+      <Screens />
       <Features />
-      <Download />
       <Footer />
     </main>
   );

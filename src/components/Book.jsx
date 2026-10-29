@@ -129,7 +129,9 @@ export default function Book() {
         start: "top top",
         end: () => `+=${master.duration() * window.innerHeight * SCROLL_PER_UNIT}`,
         pin: true,
-        scrub: reducedMotion ? true : 1,
+        // no extra lag: the hero hands its sun-born cover over to this
+        // book's first frame, and both must be at the same scroll position
+        scrub: true,
         invalidateOnRefresh: true,
         markers: DEBUG,
       });
