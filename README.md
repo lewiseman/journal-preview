@@ -21,15 +21,19 @@ npm run build    # static site in dist/
 
 ## Links
 
-All outbound links live in `src/site.js`. The APK button points at
+Outbound links live in `src/site.js`; the APK URL comes from generated
+`src/release.json`. The download button points at
 
 ```
-https://github.com/lewiseman/journal/releases/latest/download/journal.apk
+https://github.com/lewiseman/journal/releases/latest/download/journal-arm64-v8a.apk
 ```
 
-Every app release publishes the signed APK as **`journal.apk`**, so the download
+Every app release publishes the signed split APK as **`journal-arm64-v8a.apk`**, so the download
 buttons always resolve to the latest build. The footer links to the latest
 release's installation instructions. Downloads support **Android 10+ / ARM64**.
+Native libraries are compressed to reduce the download; Android extracts them
+on installation. ARM32 and x86_64 are unsupported by the current AI runtime.
+An identical `journal.apk` asset preserves older download links.
 
 Download size and version come from `src/release.json`, generated from the actual
 verified APK by the app's release script:

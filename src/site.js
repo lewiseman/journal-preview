@@ -6,15 +6,14 @@ import release from "./release.json";
 ─────────────────────────────────────────────────────────────────────── */
 
 export const LINKS = {
-  // Attach the APK to a GitHub release as `journal.apk` and this always
-  // points at the newest one.
-  apk: "https://github.com/lewiseman/journal/releases/latest/download/journal.apk",
+  // The release script selects the current architecture's permanent download.
+  apk: release.downloadUrl,
   github: "https://github.com/lewiseman/journal",
   releases: "https://github.com/lewiseman/journal/releases/latest",
 };
 
 export const APK = {
-  size: `${Math.ceil(release.sizeBytes / 1_000_000)} MB`,
+  size: `${(release.sizeBytes / 1_000_000).toFixed(1)} MB`,
   platform: "Android",
   version: release.version,
   requirements: "Android 10+ · ARM64",
