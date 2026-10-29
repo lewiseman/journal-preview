@@ -57,6 +57,12 @@ Everything in `public/art/` is copied from the app (`journal/assets/images`, plu
 desktop icon). `night.jpg` is `diary_top_bg.png` re-encoded as JPEG. Fonts in
 `public/fonts/` are the app's bundled Lora and Caveat (SIL OFL).
 
+The book uses the phone's seven current papers: Notes, Diary, AI, Flow, People,
+Appearance and Sync. Their filenames, order and accessible descriptions live in
+`src/book-papers.js`; the contents and chapter rail follow that list. Copy updated
+papers from `journal/assets/images/onboarding/` into `public/art/` without changing
+their filenames.
+
 ## Screenshots
 
 `public/shots/` holds real screens rendered by the app's own widget tests, using

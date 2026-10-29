@@ -1,4 +1,5 @@
 import { CoverFront, CoverInside, Contents, Leaf, MoreBack, EndFront } from "./BookFaces";
+import { BOOK_PAPERS } from "../book-papers";
 
 /* ───────────────────────────────────────────────────────────────────────
    BookPages.jsx: the page list. Order = book order.
@@ -21,18 +22,16 @@ import { CoverFront, CoverInside, Contents, Leaf, MoreBack, EndFront } from "./B
    split across two consecutive pages.
 ─────────────────────────────────────────────────────────────────────── */
 
-const SPREADS = ["notes", "diary", "ai", "tasks", "birthdays", "movies"];
-
 const pop = (tl, { q }) =>
   tl.from(q(".toc a"), { opacity: 0, x: 12, stagger: 0.05, duration: 0.25 }, 0.45);
 
 export const PAGES = [
   { id: "cover", type: "cover-front", front: <CoverFront />, back: <CoverInside /> },
-  { id: "contents", front: <Contents />, back: <Leaf name={SPREADS[0]} side="L" />, onReveal: pop },
-  ...SPREADS.map((name, i) => ({
-    id: name,
-    front: <Leaf name={name} side="R" />,
-    back: SPREADS[i + 1] ? <Leaf name={SPREADS[i + 1]} side="L" /> : <MoreBack />,
+  { id: "contents", front: <Contents />, back: <Leaf paper={BOOK_PAPERS[0]} side="L" />, onReveal: pop },
+  ...BOOK_PAPERS.map((paper, i) => ({
+    id: paper.id,
+    front: <Leaf paper={paper} side="R" />,
+    back: BOOK_PAPERS[i + 1] ? <Leaf paper={BOOK_PAPERS[i + 1]} side="L" /> : <MoreBack />,
   })),
   { id: "end", type: "cover-back", front: <EndFront />, back: null },
 ];

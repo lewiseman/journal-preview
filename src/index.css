@@ -825,16 +825,19 @@ main {
   color: var(--ink);
 }
 
+/* Transparent 3D containers pass clicks through to the exposed page faces. */
 .book-stage {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
   perspective: 2200px;
+  pointer-events: none;
 }
 
 .book-tilt {
   transform-style: preserve-3d;
+  pointer-events: none;
   transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -845,6 +848,7 @@ main {
   aspect-ratio: 3 / 4;
   perspective: 1600px;
   transform-style: preserve-3d;
+  pointer-events: none;
 }
 
 .book__shadow {
@@ -873,6 +877,7 @@ main {
 
 #book .book__page {
   transform-style: preserve-3d;
+  pointer-events: none;
 }
 
 #book .book__page {
@@ -900,8 +905,14 @@ main {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   background: var(--page-paper);
+  pointer-events: auto;
   transform: rotateY(calc(var(--rotation) * 1deg))
     translate3d(0, 0, calc(0.5px * var(--coefficient)));
+}
+
+/* Only the exposed faces receive input; hidden 3D leaves must not cover links. */
+.page__half[inert] {
+  pointer-events: none;
 }
 
 .page__half--front {

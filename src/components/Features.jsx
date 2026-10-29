@@ -28,9 +28,9 @@ function Feature({ n, label, icon, wash, title, children, demo }) {
 /* ── little live bits inside the cards ───────────────────────────────── */
 
 const PRINTS = [
-  { name: "ai", r: -8, fx: "-80px", cap: "lavender", pos: "74% 30%" },
-  { name: "movies", r: 6, fx: "80px", cap: "film night", pos: "76% 42%" },
-  { name: "diary", r: -1, fx: "0px", cap: "sunday", pos: "60% 38%" },
+  { name: "ai", artwork: "ai.webp", r: -8, fx: "-80px", cap: "lavender", pos: "74% 30%" },
+  { name: "people", artwork: "people.jpg", r: 6, fx: "80px", cap: "a little note", pos: "76% 42%" },
+  { name: "diary", artwork: "diary.webp", r: -1, fx: "0px", cap: "sunday", pos: "60% 38%" },
 ];
 
 function Prints() {
@@ -38,7 +38,7 @@ function Prints() {
     <div className="prints" aria-hidden="true">
       {PRINTS.map((p) => (
         <figure key={p.name} style={{ "--r": `${p.r}deg`, "--fx": p.fx }}>
-          <div style={{ backgroundImage: `url(${art(`${p.name}.webp`)})`, backgroundPosition: p.pos }} />
+          <div style={{ backgroundImage: `url(${art(p.artwork)})`, backgroundPosition: p.pos }} />
           <figcaption>{p.cap}</figcaption>
         </figure>
       ))}

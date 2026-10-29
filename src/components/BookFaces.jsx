@@ -5,6 +5,7 @@
 ─────────────────────────────────────────────────────────────────────── */
 
 import { art, CHAPTERS, LINKS, APK } from "../site";
+import { BOOK_PAPERS } from "../book-papers";
 import { setOwner, useOwner } from "../owner";
 import { Android, GitHub } from "./Icons";
 
@@ -19,12 +20,12 @@ const goto = (i) => (e) => {
 
 /* ── illustrated leaves ──────────────────────────────────────────────── */
 
-export const Leaf = ({ name, side }) => (
+export const Leaf = ({ paper, side }) => (
   <div
     className={`leaf leaf--${side}`}
-    style={{ backgroundImage: `url(${art(`${name}.webp`)})` }}
+    style={{ backgroundImage: `url(${art(paper.artwork)})` }}
     role="img"
-    aria-label={`${name} chapter, ${side === "L" ? "left" : "right"} page`}
+    aria-label={`${paper.label}. ${side === "L" ? `${paper.title} ${paper.text}` : paper.scene}`}
   />
 );
 
@@ -61,7 +62,7 @@ export const CoverInside = () => {
       </p>
       <span className="h-px w-[40%] bg-[#2a1b2f]/25" />
       <p className="max-w-[78%] text-[3.4cqw] leading-snug opacity-60">
-        Everything written here stays on this device. Keep scrolling to turn the page.
+        Your cover name stays in this browser. Keep scrolling to explore the app.
       </p>
     </Sheet>
   );
@@ -69,7 +70,9 @@ export const CoverInside = () => {
 
 /* ── contents ────────────────────────────────────────────────────────── */
 
-const TOC = CHAPTERS.slice(2, 8).map((c, i) => ({ ...c, n: i + 2, page: i * 2 + 1 }));
+const TOC = BOOK_PAPERS.map((c, i) => ({ ...c, n: i + 2, page: i * 2 + 1 }));
+const MORE_CHAPTER = BOOK_PAPERS.length + 1;
+const MORE_INDEX = CHAPTERS.length - 1;
 
 export const Contents = () => (
   <Sheet className="gap-[1cqw]">
@@ -85,11 +88,11 @@ export const Contents = () => (
           <b>{c.page}</b>
         </a>
       ))}
-      <a href="#more" onClick={goto(8)}>
+      <a href="#more" onClick={goto(MORE_INDEX)}>
         <span>
-          <em>07</em>And more
+          <em>{String(MORE_CHAPTER).padStart(2, "0")}</em>And more
         </span>
-        <b>13</b>
+        <b>{BOOK_PAPERS.length * 2 + 1}</b>
       </a>
     </nav>
     <p className="hand mt-auto text-[6.5cqw] text-[#6b3fa0]">tap a chapter, or just keep scrolling →</p>
@@ -99,15 +102,15 @@ export const Contents = () => (
 /* ── and more ────────────────────────────────────────────────────────── */
 
 const MORE = [
-  ["Flow", "Loose thoughts, saved instantly. Ask for a one-line reflection when you want one."],
   ["Photo stories", "Gentle questions about each photo, kept as a scrapbook page."],
-  ["Scan a page", "Handwritten notes become editable text."],
+  ["Scan a page", "Turn handwriting into reviewed, editable text with local AI."],
   ["Ask your journal", "Search by meaning: “when did I last feel this calm?”"],
+  ["Voice notes", "Speak a thought, review the transcript, then save it."],
 ];
 
 export const MoreBack = () => (
   <Sheet className="gap-[2cqw]">
-    <p className="font-serif text-[3cqw] uppercase tracking-[0.35em] opacity-60">Chapter 07</p>
+    <p className="font-serif text-[3cqw] uppercase tracking-[0.35em] opacity-60">Chapter {String(MORE_CHAPTER).padStart(2, "0")}</p>
     <h3 className="display text-[9cqw]">
       And so
       <br />
@@ -124,7 +127,7 @@ export const MoreBack = () => (
         </li>
       ))}
     </ul>
-    <p className="hand mt-auto text-[5.6cqw] opacity-60">a place for you</p>
+    <p className="mt-auto text-[3cqw] leading-snug opacity-60">Some AI tools need a paired Mac and compatible models.</p>
   </Sheet>
 );
 

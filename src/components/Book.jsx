@@ -31,18 +31,18 @@ const chapterAt = (t) =>
 
 /* ── markup ──────────────────────────────────────────────────────────── */
 
-function Page({ def, index }) {
+function Page({ def, index, chapter }) {
   return (
     <div
       className={`page book__page ${COVER_CLASS[def.type] ?? ""}`}
       data-page={def.id}
       style={{ "--page-index": index + 1 }}
     >
-      <div className="page__half page__half--front">
+      <div className="page__half page__half--front" inert={chapter !== index}>
         <div className="page__content">{def.front}</div>
         <span className="page__light" />
       </div>
-      <div className="page__half page__half--back">
+      <div className="page__half page__half--back" inert={chapter !== index + 1}>
         <div className="page__content">{def.back}</div>
         <span className="page__light" />
       </div>
@@ -186,7 +186,7 @@ export default function Book() {
             <div className="book__shadow" />
             <div className="book__spine" />
             {PAGES.map((def, i) => (
-              <Page key={def.id} def={def} index={i} />
+              <Page key={def.id} def={def} index={i} chapter={chapter} />
             ))}
           </div>
         </div>
@@ -195,7 +195,7 @@ export default function Book() {
       <div className="book__caption" aria-live="polite">
         <div key={c.id} className="caption-in">
           <span className="eyebrow">
-            {chapter > 1 && chapter < 8 ? `Chapter 0${chapter - 1} · ` : ""}
+            {chapter > 1 ? `Chapter ${String(chapter - 1).padStart(2, "0")} · ` : ""}
             {c.label}
           </span>
           <h3 className="display">{c.title}</h3>
