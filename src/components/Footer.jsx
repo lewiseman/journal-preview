@@ -1,4 +1,4 @@
-import { art, LINKS, APK } from "../site";
+import { art, LINKS } from "../site";
 
 export default function Footer() {
   return (
@@ -13,8 +13,7 @@ export default function Footer() {
           <a href="/privacy.html">Privacy policy</a>
           <a href="/terms.html">Terms of service</a>
         </nav>
-        <p className="text-sm">Journal {APK.version} · {APK.requirements}</p>
-        <p className="hand text-xl text-[#cfaa62]">a place for you · {new Date().getFullYear()}</p>
+        <p className="hand text-xl text-gold">a place for you · {new Date().getFullYear()}</p>
       </div>
     </footer>
   );
