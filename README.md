@@ -1,6 +1,6 @@
 # Journal · marketing site
 
-The landing page for [Journal](https://github.com/lewiseman/journal): a scroll-driven
+The landing page for [Journal](https://github.com/lewiseman/qvac_hack): a scroll-driven
 tour of the app built from its own artwork (cover, onboarding spreads, mascot and
 stationery icons), with React, GSAP, Lenis and Tailwind.
 
@@ -25,7 +25,7 @@ Outbound links live in `src/site.js`; the APK URL comes from generated
 `src/release.json`. The download button points at
 
 ```
-https://github.com/lewiseman/journal/releases/latest/download/journal-arm64-v8a.apk
+https://github.com/lewiseman/qvac_hack/releases/latest/download/journal-arm64-v8a.apk
 ```
 
 Every app release publishes the signed split APK as **`journal-arm64-v8a.apk`**, so the download
@@ -48,7 +48,7 @@ npm run build
 The app source must be committed and pushed before `--publish`. After publishing,
 commit and push this website's generated metadata and page changes using the
 existing hosting setup. The stable download URL needs no edits for future
-versions. See [the app's release guide](https://github.com/lewiseman/journal/blob/qvac-ai-on-device/docs/android-release.md) for
+versions. See the app's release guide (`docs/android-release.md`) for
 signing, OAuth, version increments and build-only previews.
 
 ## Artwork

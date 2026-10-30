@@ -9,8 +9,8 @@ import { BOOK_PAPERS } from "./book-papers";
 export const LINKS = {
   // The release script selects the current architecture's permanent download.
   apk: release.downloadUrl,
-  github: "https://github.com/lewiseman/journal",
-  releases: "https://github.com/lewiseman/journal/releases/latest",
+  github: "https://github.com/lewiseman/qvac_hack",
+  releases: "https://github.com/lewiseman/qvac_hack/releases/latest",
 };
 
 export const APK = {
